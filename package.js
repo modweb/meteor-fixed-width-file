@@ -12,6 +12,6 @@ Package.onUse(function(api) {
 });
 
 Package.onTest(function(api) {
-  api.use(['tinytest', 'coffeescript', 'creativefuse:meteor-fixed-width-file']);
+  api.use(['tinytest', 'test-helpers', 'coffeescript', 'creativefuse:meteor-fixed-width-file']);
   api.addFiles('tests/fixed-width-file-tests.coffee');
 });
