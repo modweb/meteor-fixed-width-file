@@ -1,17 +1,17 @@
 Package.describe({
-  name: 'riley:meteor-fixed-width-file',
-  summary: 'Saves a fixed width file based on ',
-  version: '1.0.0',
+  name: 'creativefuse:meteor-fixed-width-file',
+  summary: 'Writes a fixed width file based from JSON and a schema',
+  version: '0.1.0',
   git: 'https://github.com/CreativeFuse/meteor-fixed-width-file.git'
 });
 
 Package.onUse(function(api) {
   api.versionsFrom('1.0');
-  api.addFiles('riley:fixed-width-file.coffee');
+  api.use(['coffeescript']);
+  api.addFiles('fixed-width-file.coffee');
 });
 
 Package.onTest(function(api) {
-  api.use('tinytest');
-  api.use('riley:meteor-fixed-width-file');
-  api.addFiles('riley:fixed-width-file-tests.coffee');
+  api.use(['tinytest', 'coffeescript', 'creativefuse:meteor-fixed-width-file']);
+  api.addFiles('tests/fixed-width-file-tests.coffee');
 });
