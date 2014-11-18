@@ -34,8 +34,8 @@ Meteor.methods
 @prepareSingleLine = (object, schema) ->
   result = ''
   for entry in schema
-    console.log object
-    console.log entry
+    console.log "Object: #{object}"
+    console.log "Schema entry: #{entry}"
     value = object[entry.key]
     width = entry.width
     console.log "Value before toString: #{value}"
@@ -43,10 +43,10 @@ Meteor.methods
 
     if value?
       value = value.toString()
-      console.log value
+      console.log "Value after toString: #{value}"
       valueLengthIsTooLong = value.length > width
       valueLengthIsTooShort = value.length < width
-      console.log valueLengthIsTooShort
+      console.log "valueLengthTooShort: #{valueLengthIsTooShort}"
       if valueLengthIsTooLong
         console.log 'Value length is longer than desired width'
         # trim value to max allowed width
