@@ -38,9 +38,11 @@ Meteor.methods
     console.log entry
     value = object[entry.key]
     width = entry.width
-    console.log value
+    console.log "Value before toString: #{value}"
+    console.log "Width: #{width}"
 
     if value?
+      value = value.toString()
       console.log value
       valueLengthIsTooLong = value.length > width
       valueLengthIsTooShort = value.length < width
