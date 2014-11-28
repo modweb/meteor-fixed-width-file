@@ -43,6 +43,7 @@ prevent writing to certain locations as well as stripping extra slashes. E.g.:
 `'files/fixed/width'`
 
 
+
     Meteor.methods
       prepareFixedWidth: (data, schema, fileName, path = null) ->
 
