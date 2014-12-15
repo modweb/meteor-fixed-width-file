@@ -8,6 +8,14 @@ if Meteor.isServer
     phone: 5555555555
   objectWithMissingField =
     name: 'Dustin'
+  objectWithExtraField =
+    name: 'Dustin'
+    phone: 5555555555
+    extraStuff: 'I should be ignored'
+  objectWithUselessFields =
+    stuff: 'This is useless'
+    other: 123456789
+    extra: 'Really, this should be'
   schema = [
     key: 'name'
     width: 10
@@ -15,6 +23,20 @@ if Meteor.isServer
     key: 'phone'
     width: 15
   ]
+
+  ### Cases:
+    the normal case: all fields are present in the schema
+    number case: make sure numbers are treated properly
+    missing a field: expect to fill that fields with white-space
+    extra field not in schema: ?
+    all fields not in schema: do nothing?
+    bad file name: error
+    malformed data: error
+    malformed schema: error
+    malformed filename: error
+    malformed path: error
+
+  ###
 
   Tinytest.add 'prepareSingleLine - normal case', (test) ->
     result = prepareSingleLine normalObject, schema
@@ -31,15 +53,12 @@ if Meteor.isServer
     expectedResult = 'Dustin                   \n'
     test.equal result, expectedResult
 
-### Cases:
-  the normal case: all fields are present in the schema
-  missing a field: expect to fill that fields with white-space
-  extra field not in schema: ?
-  all fields not in schema: do nothing?
-  bad file name: error
-  malformed data: error
-  malformed schema: error
-  malformed filename: error
-  malformed path: error
+  Tinytest.add 'prepareSingleLine - extra field not in schema case', (test) ->
+    result = prepareSingleLine objectWithExtraField, schema
+    expectedResult = 'Dustin    5555555555     \n'
+    test.equal result, expectedResult
 
-###
+  Tinytest.add 'prepareSingleLine - all fields not in schema', (test) ->
+    result = prepareSingleLine objectWithUselessFields, schema
+    expectedResult = ''
+    test.equal result, expectedResult
