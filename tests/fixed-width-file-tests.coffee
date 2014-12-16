@@ -67,11 +67,11 @@ if Meteor.isServer
   (test) ->
     chroot = Meteor.chroot or (process.env['PWD'] + '/public')
     Meteor.call 'prepareFixedWidth', normalObject, schema, '', 'testDirectory',
-    Meteor.bindEnvironment (error, result) ->
-      fs = Npm.require 'fs'
-      path = chroot + '/testDirectory/file'
-      console.log 'path: ' + path
-      file = fs.open path, 'r'
-      console.log file? + ' file'
-      test.equal file?, true
-      if file? then file.close()
+      (error, result) ->
+        fs = Npm.require 'fs'
+        path = chroot + '/testDirectory/file'
+        console.log 'path: ' + path
+        fd = fs.openSync path, 'r'
+        console.log fd
+        test.equal fd?, true
+        if fd? then fs.closeSync fd
