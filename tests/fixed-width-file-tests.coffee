@@ -25,17 +25,17 @@ if Meteor.isServer
   ]
 
   ### Cases:
-    the normal case: all fields are present in the schema
-    number case: make sure numbers are treated properly
-    missing a field: expect to fill that fields with white-space
-    extra field not in schema: ?
-    all fields not in schema: do nothing?
-    bad file name: error
+    ✔ the normal case: all fields are present in the schema
+    ✔ number case: make sure numbers are treated properly
+    ✔ missing a field: expect to fill that fields with white-space
+    ✔ extra field not in schema: extra field ignored
+    ✔ all fields not in schema: returns an empty string
+    bad file name: makes the file name 'file'
+    writing file: make sure correct data is written
     malformed data: error
     malformed schema: error
-    malformed filename: error
-    malformed path: error
-
+    malformed filename: Filename should be fixed automatically
+    malformed path: Path should be fixed automatically
   ###
 
   Tinytest.add 'prepareSingleLine - normal case', (test) ->
@@ -62,3 +62,16 @@ if Meteor.isServer
     result = prepareSingleLine objectWithUselessFields, schema
     expectedResult = ''
     test.equal result, expectedResult
+
+  Tinytest.add 'write file - missing or bad filenames should be named file',
+  (test) ->
+    chroot = Meteor.chroot or (process.env['PWD'] + '/public')
+    Meteor.call 'prepareFixedWidth', normalObject, schema, '', 'testDirectory',
+    Meteor.bindEnvironment (error, result) ->
+      fs = Npm.require 'fs'
+      path = chroot + '/testDirectory/file'
+      console.log 'path: ' + path
+      file = fs.open path, 'r'
+      console.log file? + ' file'
+      test.equal file?, true
+      if file? then file.close()

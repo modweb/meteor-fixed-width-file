@@ -53,11 +53,12 @@ schema to prepare a single line, which we then add to the result
 
         result = ''
         for object in data
-          result += prepareSingleLine object, schema
+          result += @prepareSingleLine object, schema
 
 With the newly created result, save the file to the given path with the given
 filename. Use utf8 encoding. Then return the resulting string.
 
+        console.log result
         Meteor.call('saveFile', result, fileName, path, 'utf8')
         result
 
@@ -82,13 +83,14 @@ none was provided.
 Construct the path.
 
         path = chroot + (if path? then "/#{path}/" else '/')
+        console.log path
 
 Write the file and throw any errors if there are issues. Write to the console if
 things go well.
 
         fs.writeFile path + fileName, blob, encoding, (error) ->
           if error
-            throw new Meteor.Error 500, 'Failed to save file.', error
+            throw new Meteor.Error 500, 'Failed to save file. ' + error.message
           else
             console.log "The file #{fileName} (#{encoding}) was saved to #{path}"
 
