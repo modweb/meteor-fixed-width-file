@@ -53,13 +53,13 @@ schema to prepare a single line, which we then add to the result
 
         result = ''
         for object in data
-          result += @prepareSingleLine object, schema
+          result += prepareSingleLine object, schema
 
 With the newly created result, save the file to the given path with the given
 filename. Use utf8 encoding. Then return the resulting string.
 
-        console.log result
-        Meteor.call('saveFile', result, fileName, path, 'utf8')
+        if result.length > 0
+          Meteor.call('saveFile', result, fileName, path, 'utf8')
         result
 
 Method to save the file. Writes the blob of data to the supplied path with the
@@ -83,12 +83,11 @@ none was provided.
 Construct the path.
 
         path = chroot + (if path? then "/#{path}/" else '/')
-        console.log path
 
 Write the file and throw any errors if there are issues. Write to the console if
 things go well.
 
-        fs.writeFile path + fileName, blob, encoding, (error) ->
+        fs.writeFileSync path + fileName, blob, encoding, (error) ->
           if error
             throw new Meteor.Error 500, 'Failed to save file. ' + error.message
           else
@@ -103,12 +102,8 @@ schema calls for each iteration for debugging purposes (for now).
     @prepareSingleLine = (object, schema) ->
       result = ''
       for entry in schema
-        console.log "Object: #{object}"
-        console.log "Schema entry: #{entry}"
         value = object[entry.key]
         width = entry.width
-        console.log "Value before toString: #{value}"
-        console.log "Width: #{width}"
 
 Check if the value exists. If it does, call toString() for any values that could
 be integers, etc. We log that and see if the value is either longer or shorter
@@ -118,22 +113,17 @@ down to size.
 
         if value?
           value = value.toString()
-          console.log "Value after toString: #{value}"
           valueLengthIsTooLong = value.length > width
           valueLengthIsTooShort = value.length < width
-          console.log "valueLengthTooShort: #{valueLengthIsTooShort}"
           if valueLengthIsTooLong
-            console.log 'Value length is longer than desired width'
             value = value.substr(0, width)
           else if valueLengthIsTooShort
-            console.log 'Value length is shorter than desired width'
             value = value + new Array(width - value.length + 1).join(' ')
 
 If the value doesn't exist, we write whitespace to the desired width and log it.
 
         else
           value = new Array(width + 1).join(' ')
-          console.log 'Value does not exist'
 
 Regardless, we add that value to the result.
 
