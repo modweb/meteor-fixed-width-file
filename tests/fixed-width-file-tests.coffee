@@ -33,6 +33,10 @@ if Meteor.isServer
     key: 'phone'
     width: 15
   ]
+  badSchema = [
+    key: 'name'
+    notWidth: 'schema needs a width, yo'
+  ]
 
   ### Cases:
     ✔ the normal case: all fields are present in the schema
@@ -43,8 +47,7 @@ if Meteor.isServer
     ✔ bad file name: makes the file name 'file'
     ✔ writing file: make sure correct data is written
     ✔ malformed data: no data written
-    malformed schema: error
-    malformed filename: Filename should be fixed automatically
+    ✔ malformed schema: error
     malformed path: Path should be fixed automatically
   ###
 
@@ -103,7 +106,7 @@ if Meteor.isServer
     'testDirectory',
       (error, result) ->
         fs = Npm.require 'fs'
-        path = chroot + 'testDirectory/badData.txt'
+        path = chroot + '/testDirectory/badData.txt'
         fd = null
         try
           fd = fs.openSync path, 'r'
@@ -113,3 +116,21 @@ if Meteor.isServer
         finally
           test.equal fd?, false
           if fd? then fs.closeSync fd
+
+  Tinytest.add 'write file - make sure an error is thrown if the schema is bad',
+  (test) ->
+    Meteor.call 'prepareFixedWidth', normalObjectArray, badSchema, 'nofile.txt',
+    'testDirectory',
+      (error, result) ->
+        test.equal error?, true
+
+  Tinytest.add 'write file - fix malformed paths', (test) ->
+    chroot = Meteor.chroot or (process.env['PWD'] + '/public')
+    Meteor.call 'prepareFixedWidth', normalObjectArray, schema, 'pathTest.txt',
+    '../testDirectory/',
+      (error, result) ->
+        fs = Npm.require 'fs'
+        path = chroot + '/testDirectory/pathTest.txt'
+        fd = fs.openSync path, 'r'
+        test.equal fd?, true
+        if fd? then fs.closeSync fd

@@ -104,6 +104,8 @@ schema calls for each iteration for debugging purposes (for now).
       for entry in schema
         value = object[entry.key]
         width = entry.width
+        if not entry.key? or not width?
+          throw new Meteor.error 500, 'Malformed schema. Missing key or width.'
 
 Check if the value exists. If it does, call toString() for any values that could
 be integers, etc. We log that and see if the value is either longer or shorter
