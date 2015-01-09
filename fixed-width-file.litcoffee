@@ -42,56 +42,25 @@ schema = [
 prevent writing to certain locations as well as stripping extra slashes. E.g.:
 `'files/fixed/width'`
 
-Beginning meteor methods:
+__PLEASE NOTE. A PUBLIC DIRECTORY MUST EXIST IN YOUR METEOR DIRECTORY!__
+Beginning FixedWidth:
 
-    Meteor.methods
-      prepareFixedWidth: (data, schema, fileName, path = null) ->
+    FixedWidth.prepareFixedWidth = (data, schema, fileName, path = null) ->
 
 Create the initial black result string (where we will keep track of what will
 be written later). Iterate over each object in the data array, and use the
 schema to prepare a single line, which we then add to the result
 
-        result = ''
-        for object in data
-          result += prepareSingleLine object, schema
+      result = ''
+      for object in data
+        result += Helper.prepareSingleLine object, schema
 
 With the newly created result, save the file to the given path with the given
 filename. Use utf8 encoding. Then return the resulting string.
 
-        if result.length > 0
-          Meteor.call('saveFile', result, fileName, path, 'utf8')
-        result
-
-Method to save the file. Writes the blob of data to the supplied path with the
-provided filename and encoding.
-
-      saveFile: (blob, fileName, path, encoding) ->
-
-Clean up the path. We remove the initial and final '/' since we add them
-ourselves. We also block any attempt to go to the parent directory. We then
-remove consecutive '////' that could occur after removing '..'. We then require
-the filesystem node module (fs), clean the filename, and assume utf8 encoding if
-none was provided.
-
-        path = cleanPath path
-        fs = Npm.require 'fs'
-        fileName = cleanName fileName or 'file'
-        encoding = encoding or 'utf8'
-
-        chroot = Meteor.chroot or (process.env['PWD'] + '/public')
-
-Construct the path.
-
-        path = chroot + (if path? then "/#{path}/" else '/')
-
-Write the file and throw any errors if there are issues. Write to the console if
-things go well.
-
-        fs.writeFileSync path + fileName, blob, encoding, (error) ->
-          if error
-            throw new Meteor.Error 500, 'Failed to save file. ' + error.message
-          else
-            console.log "The file #{fileName} (#{encoding}) was saved to #{path}"
+      if result.length > 0
+        Helper.saveFile result, fileName, path, 'utf8'
+      result
 
 ## Helper Functions
 
@@ -99,7 +68,7 @@ This function is responsible for preparing one line of the fixed width file. It
 also logs the object, schema, value before toString is called, and the width the
 schema calls for each iteration for debugging purposes (for now).
 
-    @prepareSingleLine = (object, schema) ->
+    Helper.prepareSingleLine = (object, schema) ->
       result = ''
       for entry in schema
         value = object[entry.key]
@@ -137,12 +106,43 @@ trailing new line.
       isValidSingleLine = !!result.match /\S/
       if isValidSingleLine then result += '\n' else ''
 
+Method to save the file. Writes the blob of data to the supplied path with the
+provided filename and encoding.
+
+    Helper.saveFile = (blob, fileName, path, encoding) ->
+
+Clean up the path. We remove the initial and final '/' since we add them
+ourselves. We also block any attempt to go to the parent directory. We then
+remove consecutive '////' that could occur after removing '..'. We then require
+the filesystem node module (fs), clean the filename, and assume utf8 encoding if
+none was provided.
+
+      path = Helper.cleanPath path
+      fs = Npm.require 'fs'
+      fileName = Helper.cleanName fileName or 'file'
+      encoding = encoding or 'utf8'
+
+      chroot = process.env['PWD'] + '/public'
+
+Construct the path.
+
+      path = chroot + (if path? then "/#{path}/" else '/')
+
+Write the file and throw any errors if there are issues. Write to the console if
+things go well.
+
+      fs.writeFileSync path + fileName, blob, encoding, (error) ->
+        if error?
+          throw new Meteor.Error 500, 'Failed to save file. ' + error.message
+        else
+          console.log "The file #{fileName} (#{encoding}) was saved to #{path}"
+
 The cleanPath function removes all '..' and extraneous '/'
 
-    cleanPath = (str) ->
+    Helper.cleanPath = (str) ->
       str.replace(/\.\./g, '').replace(/\/+/g, '').replace(/^\/+/,
         '').replace /\/+$/, ''  if str
 
 The cleanName method does the same thing.
 
-    cleanName = (str) -> str.replace(/\.\./g, '').replace /\//g, ''
+    Helper.cleanName = (str) -> str.replace(/\.\./g, '').replace /\//g, ''

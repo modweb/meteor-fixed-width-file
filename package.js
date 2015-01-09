@@ -8,10 +8,13 @@ Package.describe({
 Package.onUse(function(api) {
   api.versionsFrom('1.0');
   api.use(['coffeescript']);
-  api.addFiles('fixed-width-file.litcoffee');
+  api.addFiles('namespaces.litcoffee', 'server');
+  api.addFiles('fixed-width-file.litcoffee', 'server');
+  api.export("FixedWidth", "server");
 });
 
 Package.onTest(function(api) {
   api.use(['tinytest', 'test-helpers', 'coffeescript', 'creativefuse:meteor-fixed-width-file']);
   api.addFiles('tests/fixed-width-file-tests.coffee');
+  api.export("FixedWidth", ["client", "server"]);
 });
