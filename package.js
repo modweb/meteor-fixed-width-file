@@ -1,8 +1,8 @@
 Package.describe({
-  name: 'creativefuse:fixed-width-file',
+  name: 'modweb:fixed-width-file',
   summary: 'Writes a fixed width file based from JSON and a schema',
   version: '0.1.0',
-  git: 'https://github.com/CreativeFuse/meteor-fixed-width-file.git'
+  git: 'https://github.com/modweb/meteor-fixed-width-file.git'
 });
 
 Package.onUse(function(api) {
@@ -14,7 +14,7 @@ Package.onUse(function(api) {
 });
 
 Package.onTest(function(api) {
-  api.use(['tinytest', 'test-helpers', 'coffeescript', 'creativefuse:meteor-fixed-width-file']);
+  api.use(['tinytest', 'test-helpers', 'coffeescript', 'modweb:fixed-width-file']);
   api.addFiles('tests/fixed-width-file-tests.coffee');
   api.export("FixedWidth", ["client", "server"]);
 });
