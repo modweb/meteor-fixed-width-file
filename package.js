@@ -1,5 +1,5 @@
 Package.describe({
-  name: 'creativefuse:meteor-fixed-width-file',
+  name: 'creativefuse:fixed-width-file',
   summary: 'Writes a fixed width file based from JSON and a schema',
   version: '0.1.0',
   git: 'https://github.com/CreativeFuse/meteor-fixed-width-file.git'
