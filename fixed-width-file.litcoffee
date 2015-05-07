@@ -128,12 +128,14 @@ Construct the path.
 
       path = chroot + (if path? then "/#{path}/" else '/')
 
-Write the file and throw any errors if there are issues. Write to the console if
-things go well.
+TODO: check if path exists, if not create the necessary directories
+
+Write the file
 
       fs.writeFileSync path + fileName, blob, encoding, (error) ->
         if error?
           throw new Meteor.Error 500, 'Failed to save file. ' + error.message
+          console.log error.message
         else
           console.log "The file #{fileName} (#{encoding}) was saved to #{path}"
 
