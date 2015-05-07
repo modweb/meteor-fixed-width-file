@@ -122,7 +122,7 @@ none was provided.
       fileName = Helper.cleanName fileName or 'file'
       encoding = encoding or 'utf8'
 
-      chroot = process.env['PWD'] + '/public'
+      chroot = process.env.PWD
 
 Construct the path.
 
