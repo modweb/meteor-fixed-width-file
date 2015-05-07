@@ -1,7 +1,7 @@
 Package.describe({
   name: 'modweb:fixed-width-file',
   summary: 'Writes a fixed width file based from JSON and a schema',
-  version: '0.1.0',
+  version: '0.1.1',
   git: 'https://github.com/modweb/meteor-fixed-width-file.git'
 });
 
