@@ -83,9 +83,8 @@ if Meteor.isServer
     expectedResult = ''
     test.equal result, expectedResult
 
-  Tinytest.add 'write file - missing or bad filenames should be named file',
-  (test) ->
-    chroot = Meteor.chroot or (process.env['PWD'] + '/public')
+  Tinytest.add 'write file - missing or bad filenames should be named file', (test) ->
+    chroot = Meteor.chroot or process.env['PWD']
     FixedWidth.prepareFixedWidth normalObjectArray, schema, '', 'testDirectory'
     fs = Npm.require 'fs'
     path = chroot + '/testDirectory/file'
@@ -94,20 +93,23 @@ if Meteor.isServer
     if fd? then fs.closeSync fd
 
   Tinytest.add 'write file - make sure data is correct from file', (test) ->
-    chroot = Meteor.chroot or (process.env['PWD'] + '/public')
+    chroot = Meteor.chroot or process.env['PWD']
     FixedWidth.prepareFixedWidth normalObjectArray, schema, 'hello.txt',
       'testDirectory'
     fs = Npm.require 'fs'
     path = chroot + '/testDirectory/hello.txt'
     content = fs.readFileSync(path).toString()
-    expected = 'Dustin    555-555-5555   \nOther     555-555-5555   \n'
+    expected = 'Dustin    555-555-5555   \nOther     555-555-5555   \n\n'
     test.equal content, expected
 
   Tinytest.add 'write file - make sure nothing is written with bad data',
   (test) ->
-    chroot = Meteor.chroot or (process.env['PWD'] + '/public')
-    FixedWidth.prepareFixedWidth normalObject, schema, 'badData.txt',
-      'testDirectory'
+    chroot = Meteor.chroot or process.env['PWD']
+    try
+      FixedWidth.prepareFixedWidth normalObjectArray, schema, 'hello.txt',
+        'testDirectory'
+    catch error
+      test.isNotNull error
     fs = Npm.require 'fs'
     path = chroot + '/testDirectory/badData.txt'
     fd = null
@@ -130,7 +132,7 @@ if Meteor.isServer
 
 
   Tinytest.add 'write file - fix malformed paths', (test) ->
-    chroot = Meteor.chroot or (process.env['PWD'] + '/public')
+    chroot = Meteor.chroot or process.env['PWD']
     FixedWidth.prepareFixedWidth normalObjectArray, schema, 'pathTest.txt',
       '../testDirectory/',
     fs = Npm.require 'fs'

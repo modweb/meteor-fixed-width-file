@@ -45,11 +45,13 @@ prevent writing to certain locations as well as stripping extra slashes. E.g.:
 __PLEASE NOTE. A PUBLIC DIRECTORY MUST EXIST IN YOUR METEOR DIRECTORY!__
 Beginning FixedWidth:
 
-    FixedWidth.prepareFixedWidth = (data, schema, fileName, path = null) ->
+    FixedWidth.prepareFixedWidth = (data, schema, fileName, path = null, newlineAtEndOfFile = yes) ->
 
 Create the initial black result string (where we will keep track of what will
 be written later). Iterate over each object in the data array, and use the
 schema to prepare a single line, which we then add to the result
+
+      check data, [ Object ]
 
       result = ''
       for object in data
@@ -57,6 +59,11 @@ schema to prepare a single line, which we then add to the result
 
 With the newly created result, save the file to the given path with the given
 filename. Use utf8 encoding. Then return the resulting string.
+
+Add an extra newline to the end of file
+
+      if newlineAtEndOfFile
+        result += '\n'
 
       if result.length > 0
         Helper.saveFile result, fileName, path, 'utf8'
