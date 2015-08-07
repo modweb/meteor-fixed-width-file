@@ -99,7 +99,7 @@ if Meteor.isServer
     fs = Npm.require 'fs'
     path = chroot + '/testDirectory/hello.txt'
     content = fs.readFileSync(path).toString()
-    expected = 'Dustin    555-555-5555   \nOther     555-555-5555   \n\n'
+    expected = 'Dustin    555-555-5555   \nOther     555-555-5555   \n'
     test.equal content, expected
 
   Tinytest.add 'write file - make sure nothing is written with bad data',
