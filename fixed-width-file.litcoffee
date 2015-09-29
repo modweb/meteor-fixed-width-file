@@ -45,7 +45,7 @@ prevent writing to certain locations as well as stripping extra slashes. E.g.:
 __PLEASE NOTE. A PUBLIC DIRECTORY MUST EXIST IN YOUR METEOR DIRECTORY!__
 Beginning FixedWidth:
 
-    FixedWidth.prepareFixedWidth = (data, schema, fileName, path = null) ->
+    FixedWidth.prepareFixedWidth = (data, schema, fileName, path = null, eol='\n') ->
 
 Create the initial black result string (where we will keep track of what will
 be written later). Iterate over each object in the data array, and use the
@@ -55,7 +55,7 @@ schema to prepare a single line, which we then add to the result
 
       result = ''
       for object in data
-        result += Helper.prepareSingleLine object, schema
+        result += Helper.prepareSingleLine object, schema, eol
 
 With the newly created result, save the file to the given path with the given
 filename. Use utf8 encoding. Then return the resulting string.
@@ -70,7 +70,7 @@ This function is responsible for preparing one line of the fixed width file. It
 also logs the object, schema, value before toString is called, and the width the
 schema calls for each iteration for debugging purposes (for now).
 
-    Helper.prepareSingleLine = (object, schema) ->
+    Helper.prepareSingleLine = (object, schema, eol='\n') ->
       result = ''
       for entry in schema
         value = object[entry.key]
@@ -106,7 +106,7 @@ We check to make sure at least one value was written. If there was, we add a
 trailing new line.
 
       isValidSingleLine = !!result.match /\S/
-      if isValidSingleLine then result += '\n' else ''
+      if isValidSingleLine then result += eol else ''
 
 Method to save the file. Writes the blob of data to the supplied path with the
 provided filename and encoding.

@@ -63,6 +63,11 @@ if Meteor.isServer
     expectedResult = 'Dustin    555-555-5555   \n'
     test.equal result, expectedResult
 
+  Tinytest.add 'prepareSingleLine - custom eol', (test) ->
+    result = Helper.prepareSingleLine normalObject, schema, '\r\n'
+    expectedResult = 'Dustin    555-555-5555   \r\n'
+    test.equal result, expectedResult
+
   Tinytest.add 'prepareSingleLine - number case', (test) ->
     result = Helper.prepareSingleLine objectWithNumber, schema
     expectedResult = 'Dustin    5555555555     \n'
