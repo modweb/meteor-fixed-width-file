@@ -1,7 +1,7 @@
 Package.describe({
   name: 'modweb:fixed-width-file',
   summary: 'Writes a fixed width file based from JSON and a schema',
-  version: '0.2.0',
+  version: '0.2.1',
   git: 'https://github.com/modweb/meteor-fixed-width-file.git'
 });
 
@@ -10,7 +10,7 @@ Package.onUse(function(api) {
   api.use(['coffeescript', 'check']);
   api.addFiles('namespaces.litcoffee', 'server');
   api.addFiles('fixed-width-file.litcoffee', 'server');
-  api.export("FixedWidth", "server");
+  api.export("FixedWidth", ['client', 'server']);
 });
 
 Package.onTest(function(api) {
